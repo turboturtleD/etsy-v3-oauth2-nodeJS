@@ -5,12 +5,12 @@ Experimental nodeJS client for Etsy v3 API using Express for Node.
 <hr>
 
 Required Node Modules:
-express
-express-session
-body-parser
-crypto-js
-uuid
-@supercharge/strings
+express,
+express-session,
+body-parser,
+crypto-js,
+uuid,
+@supercharge/strings,
 request
 
 <hr>
