@@ -7,15 +7,17 @@
 `const { v4: uuidv4 } = require('uuid')`<br>
 `const Str = require('@supercharge/strings')`<br>
 `const request = require('request')`<br>
+`const https = require('https')`<br>
+`const express = require('express')`<br>
+`const session = require('express-session')`<br>
 `const openapi = require('./openapi')`<br>
 `const { client_id, salt, scopes, redirect_uri } = require('./etsyAuth.config')`<br>
-`var app = express()`<br>
 `const etsy = require('./etsyAuth')`<br>
-`const session = require('express-session')`
+
 
 # Config:
 
-Edit <b>etsyAuth.config</b> file by entering your <b>client_id, salt, scopes, and redirect_uri</b> for token authorization.
+Edit **etsyAuth.config** file by entering your **client_id**, **salt**, **scopes**, and **redirect_uri** for token authorization. For the purposes of this document, it is assumed you are able to setup and or manage your own https server using <a href="https://expressjs.com/" target="_blank" >Express</a> for NodeJS.
 
 # Basic usage:
 
