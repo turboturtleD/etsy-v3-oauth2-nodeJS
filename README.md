@@ -3,11 +3,11 @@
 <b>Experimental nodeJS client for Etsy v3 API using Express for Node.</b>
 
 <b>Required Node Modules:</b><br>
-`const CryptoJS = require('crypto-js')           // https://www.npmjs.com/package/crypto-js`<br>
-`const { v4: uuidv4 } = require('uuid')          // https://www.npmjs.com/package/uuid`<br>
-`const Str = require('@supercharge/strings')     // https://www.npmjs.com/package/@supercharge/strings`<br>
-`const request = require('request')              // https://www.npmjs.com/package/request`<br>
-`const openapi = require('./openapi')            //`<br>
+`const CryptoJS = require('crypto-js')`<br>
+`const { v4: uuidv4 } = require('uuid')`<br>
+`const Str = require('@supercharge/strings')`<br>
+`const request = require('request')`<br>
+`const openapi = require('./openapi')`<br>
 `const { client_id, salt, scopes, redirect_uri } = require('./etsyAuth.config')`<br>
 `var app = express()`<br>
 `const etsy = require('./etsyAuth')`<br>
