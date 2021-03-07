@@ -4,12 +4,12 @@
 
 <b>Required Node Modules:</b><br>
 `const CryptoJS = require('crypto-js')`<br>
-`const { v4: uuidv4 } = require('uuid')`<br>
-`const Str = require('@supercharge/strings')`<br>
-`const request = require('request')`<br>
-`const https = require('https')`<br>
 `const express = require('express')`<br>
 `const session = require('express-session')`<br>
+`const https = require('https')`<br>
+`const request = require('request')`<br>
+`const Str = require('@supercharge/strings')`<br>
+`const { v4: uuidv4 } = require('uuid')`<br><br>
 `const openapi = require('./openapi')`<br>
 `const { client_id, salt, scopes, redirect_uri } = require('./etsyAuth.config')`<br>
 `const etsy = require('./etsyAuth')`<br>
