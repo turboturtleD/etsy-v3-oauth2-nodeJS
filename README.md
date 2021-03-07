@@ -28,7 +28,7 @@ Next, redirect the client to consent URL.</b>
 
 After client authorizes, they are returned to the <b>redirect_uri</b> provided in the <b>etsyAuth.config</b> file.  Now we must validate the server response by comparing the <b>state</b> value from the response with the <b>state</b> value stored in the <b>initializeTenant</b> object.
 
-`if(req.session.initializeTenant.state != state)throw new Error('State value matching failed')`
+`if (req.session.initializeTenant.state != state) throw new Error('State value matching failed')`
 
 If the state values match, we want obtain the <b>access_token</b> using the <b>initializeTenant.preimage</b> and the authorization <b>code</b> provided from the server in the previous step:
 
