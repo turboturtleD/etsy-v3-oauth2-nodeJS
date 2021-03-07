@@ -3,15 +3,15 @@
 <b>Experimental nodeJS client for Etsy v3 API using Express for Node.</b>
 
 <b>Required Node Modules:</b><br>
-`const CryptoJS = require('crypto-js')           // https://www.npmjs.com/package/crypto-js
-const { v4: uuidv4 } = require('uuid')          // https://www.npmjs.com/package/uuid
-const Str = require('@supercharge/strings')     // https://www.npmjs.com/package/@supercharge/strings
-const request = require('request')              // https://www.npmjs.com/package/request
-const openapi = require('./openapi')            //
-const { client_id, salt, scopes, redirect_uri } = require('./etsyAuth.config')
-var app = express()
-const etsy = require('./etsyAuth')
-const session = require('express-session')`
+`const CryptoJS = require('crypto-js')           // https://www.npmjs.com/package/crypto-js`<br>
+`const { v4: uuidv4 } = require('uuid')          // https://www.npmjs.com/package/uuid`<br>
+`const Str = require('@supercharge/strings')     // https://www.npmjs.com/package/@supercharge/strings`<br>
+`const request = require('request')              // https://www.npmjs.com/package/request`<br>
+`const openapi = require('./openapi')            //`<br>
+`const { client_id, salt, scopes, redirect_uri } = require('./etsyAuth.config')`<br>
+`var app = express()`<br>
+`const etsy = require('./etsyAuth')`<br>
+`const session = require('express-session')`
 
 # Config:
 
