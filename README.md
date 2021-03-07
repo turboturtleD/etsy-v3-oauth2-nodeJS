@@ -17,7 +17,7 @@ Edit <b>etsyAuth.config</b> file by entering your <b>client_id, salt, scopes, an
 
 # Basic usage:
 
-Instantiate a <b>new EtsyClient</b> Object</b>
+Initialize by instantiating a <b>new EtsyClient</b> Object</b>
 
 `let initializeTenant = new etsy.EtsyClient().initializeTenant()`
 
