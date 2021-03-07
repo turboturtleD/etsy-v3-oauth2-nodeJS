@@ -21,7 +21,7 @@ Instantiate a <b>new EtsyClient</b> Object</b>
 
 `let initializeTenant = new etsy.EtsyClient().initializeTenant()`
 
-Store <b>initilizeTenant</b> object in a secure server location for later authentication.
+Store <b>initializeTenant</b> object in a secure server location for later authentication.
 Next redirect the client to consent URL.</b>
 
 `let consentURL = initializeTenant.consentUrl`
