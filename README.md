@@ -39,7 +39,7 @@ If the state values match, we want obtain the <b>access_token</b> using the <b>i
 
 At this point the <b>initializeTenant</b> object is no longer needed and should be removed from storage as it will not be reused.  Next make the request for the <b>access_token</b>:
 
-`let result = await etsy.EtsyClient.getAccessToken(tokenRequest) /r`
+`let result = await etsy.EtsyClient.getAccessToken(tokenRequest) /\r`
 `let token = JSON.parse(result)`
 
 The <b>access_token</b> (token.access_token) expires in <b>1 hour</b>, and the <b>refresh_token</b> in <b>90 days</b>.  Next, enhance the <b>token</b> with expiration dates token so we know when it needs to be refreshed or re-authenticated:
