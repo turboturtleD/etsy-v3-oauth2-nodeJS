@@ -1,19 +1,15 @@
 # etsy-oauth2-nodeJS
 
-Experimental nodeJS client for Etsy v3 API using Express for Node.
+<b>Experimental nodeJS client for Etsy v3 API using Express for Node.</b>
 
-<hr>
-
-Required Node Modules:
-express,
-express-session,
-body-parser,
-crypto-js,
-uuid,
-@supercharge/strings,
+<b>Required Node Modules:</b><br>
+express<br>
+express-session<br>
+body-parser<br>
+crypto-js<br>
+uuid<br>
+@supercharge/strings<br>
 request
-
-<hr>
 
 # Config:
 
