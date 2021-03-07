@@ -1,4 +1,4 @@
-# etsy-oauth2-nodeJS
+# etsy-v3-oauth2-nodeJS
 
 <b>Experimental nodeJS client for Etsy v3 API using Express for Node.</b>
 
