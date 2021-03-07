@@ -62,11 +62,15 @@ The **access_token** (token.access_token) expires in **1 hour**, and the **refre
 
 `const enhanced_token = etsy.EtsyClient.enhanceToken(token)`
 
+Now we can store the token in session storage.
+
+`req.session.token = enhanced_token`
+
 Before each endpoint request is made, the token is examined to be expired or valid for use.  
 
-`access_token = EtsyClient.refresh(token)`
+`enhanced_token = EtsyClient.refresh(enhanced_token)`
 
-If the **access_token** is still valid, it will be returned immediately.  If the **access_token** has expired, but the **refresh_token** is still valid, the token will be renewed asychronously and returned by a **Promise** when complete.  If the **refresh_token** has expired, this function will return an **error:** 'refresh token expired, re-athentication required' with no further handling.
+If the **access_token** is still valid, it will be returned immediately.  If the **access_token** has expired, but the **refresh_token** is still valid, the token will be renewed asychronously and returned by a **Promise** when complete.  If the **refresh_token** has expired, the function will return an **error:** 'refresh token expired, re-athentication required' with no further handling.
 
 Finally a request can be made to the v3 endpoints by using the EtsyClient.request function.  Currently this function is only able to handle basic requests.
 
