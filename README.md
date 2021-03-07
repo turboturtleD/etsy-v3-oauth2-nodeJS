@@ -3,13 +3,15 @@
 <b>Experimental nodeJS client for Etsy v3 API using Express for Node.</b>
 
 <b>Required Node Modules:</b><br>
-express<br>
-express-session<br>
-body-parser<br>
-crypto-js<br>
-uuid<br>
-@supercharge/strings<br>
-request
+`const CryptoJS = require('crypto-js')           // https://www.npmjs.com/package/crypto-js
+const { v4: uuidv4 } = require('uuid')          // https://www.npmjs.com/package/uuid
+const Str = require('@supercharge/strings')     // https://www.npmjs.com/package/@supercharge/strings
+const request = require('request')              // https://www.npmjs.com/package/request
+const openapi = require('./openapi')            //
+const { client_id, salt, scopes, redirect_uri } = require('./etsyAuth.config')
+var app = express()
+const etsy = require('./etsyAuth')
+const session = require('express-session')`
 
 # Config:
 
@@ -21,42 +23,52 @@ Initialize by instantiating a <b>new EtsyClient</b> Object</b>
 
 `let initializeTenant = new etsy.EtsyClient().initializeTenant()`
 
-Store <b>initializeTenant</b> object in a secure server location for later authentication.
+Store <b>initializeTenant</b> object in a secure server location for later authentication, in this example we use the **express-session** node module.
+
+`req.session.initializeTenant = initializeTenant`
+
 Next, redirect the client to consent URL.</b>
 
-`let consentURL = initializeTenant.consentUrl`
+`res.redirect(302, initializeTenant.consentUrl)`
 
-After client authorizes, they are returned to the <b>redirect_uri</b> provided in the <b>etsyAuth.config</b> file.  Now we must validate the server response by comparing the <b>state</b> value from the response with the <b>state</b> value stored in the <b>initializeTenant</b> object.
+After client authorizes the app on the Etsy Authorization page, they are returned to the <b>redirect_uri</b> provided in the <b>etsyAuth.config</b> file.  Now we must validate the server response by comparing the **state** value from the response with the **state** value saved in the session **initializeTenant** object.
 
 `if (req.session.initializeTenant.state != state) throw new Error('State value matching failed')`
 
-If the state values match, we want obtain the <b>access_token</b> using the <b>initializeTenant.preimage</b> and the authorization <b>code</b> provided from the server in the previous step:
+If the **state** values match, we want to proceed to obtain the **access_token**.
 
+First we form the **tokenRequest** object using the **initializeTenant.preimage** retrieved from session storage, and the authorization **code** provided from the server in the previous response.  
+
+`const initializeTenant = req.session.initializeTenant`<br>
 `const tokenRequest = {
     code : req.query.code,
     code_verifier : initializeTenant.preimage,
 }`
 
-At this point the <b>initializeTenant</b> object is no longer needed and should be removed from storage as it will not be reused.  Next make the request for the <b>access_token</b>:
+At this point the **initializeTenant** object is no longer needed and should be removed from storage as it will not be reused.
+
+`delete req.session.initializeTenant`
+
+Next make the request for the **access_token**.
 
 `let result = await etsy.EtsyClient.getAccessToken(tokenRequest)`<br>
 `let token = JSON.parse(result)`
 
-The <b>access_token</b> (token.access_token) expires in <b>1 hour</b>, and the <b>refresh_token</b> in <b>90 days</b>.  Next, enhance the <b>token</b> with expiration dates token so we know when it needs to be refreshed or re-authenticated:
+The **access_token** (token.access_token) expires in **1 hour**, and the **refresh_token** in **90 days**.  Next, we add expiration dates to the token so we know when it needs to be refreshed or re-authenticated:
 
 `const enhanced_token = etsy.EtsyClient.enhanceToken(token)`
 
-When the time comes to make a request, the token must be examined to determine if it's expired or valid for use.  You can do this using <b>EtsyClient.refresh()</b>.  
+Before each endpoint request is made, the token is examined to be expired or valid for use.  
 
 `access_token = EtsyClient.refresh(token)`
 
-If the <b>token</b> is still valid, it will be returned immediately and no additional process is required.  If the <b>access_token</b> has expired, but the <b>refresh_token</b> is still valid, the token will be renewed asychronously and returned by a <b>Promise</b> when complete.  If the <b>refresh_token</b> has expired, this operation will return an <b>error</b>: 'refresh token expired, re-athentication required' with no further handling.
+If the **access_token** is still valid, it will be returned immediately.  If the **access_token** has expired, but the **refresh_token** is still valid, the token will be renewed asychronously and returned by a **Promise** when complete.  If the **refresh_token** has expired, this function will return an **error:** 'refresh token expired, re-athentication required' with no further handling.
 
 Finally a request can be made to the v3 endpoints by using the EtsyClient.request function.  Currently this function is only able to handle basic requests.
 
-# ***Etsy v3 endpoints are currently in the Alpha testing phase, and they cannot be accessed without your client_id being explicitly whitelisted.  I have not yet been able to successfully test these endpoints, and cannot at this time attest to the actual functionality or the validity of the following endpoint request functions***
+# ***Etsy v3 endpoints are currently in a Closed Alpha group test phase, and they cannot be accessed without your client_id being explicitly whitelisted by Etsy.com.  I have not yet been able to successfully test these endpoints, and cannot at this time attest to the actual functionality or the validity of the following endpoint request functions***
 
-Request example using <b>EtsyClient.request</b>:
+Request example using **EtsyClient.request()**:
 
 `let result = await etsy.EtsyClient.request('getShopPaymentAccountLedgerEntries', { 
     min_created : 946684800,
