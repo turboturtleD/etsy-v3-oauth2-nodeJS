@@ -37,7 +37,7 @@ Next, redirect the client to consent URL.</b>
 
 After client authorizes the app on the Etsy Authorization page, they are returned to the <b>redirect_uri</b> provided in the <b>etsyAuth.config</b> file.  Now we must validate the server response by comparing the **state** value from the response with the **state** value saved in the session **initializeTenant** object.
 
-`if (req.session.initializeTenant.state != state) throw new Error('State value matching failed')`
+`if (req.session.initializeTenant.state !== state) throw new Error('State value matching failed')`
 
 If the **state** values match, we want to proceed to obtain the **access_token**.
 
