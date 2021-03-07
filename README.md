@@ -1,15 +1,17 @@
 # etsy-v3-oauth2-nodeJS
 
-<b>Experimental nodeJS client for Etsy v3 API using Express for Node.</b>
+**Experimental nodeJS client for Etsy v3 API using Express for Node.**
 
-<b>Required Node Modules:</b><br>
+**Required Node Modules:**<br>
 `const CryptoJS = require('crypto-js')`<br>
 `const express = require('express')`<br>
 `const session = require('express-session')`<br>
 `const https = require('https')`<br>
 `const request = require('request')`<br>
 `const Str = require('@supercharge/strings')`<br>
-`const { v4: uuidv4 } = require('uuid')`<br><br>
+`const { v4: uuidv4 } = require('uuid')`<br>
+
+**Required local files:**
 `const openapi = require('./openapi')`<br>
 `const { client_id, salt, scopes, redirect_uri } = require('./etsyAuth.config')`<br>
 `const etsy = require('./etsyAuth')`<br>
