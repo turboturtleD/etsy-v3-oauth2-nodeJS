@@ -86,7 +86,7 @@ The **EtsyClient.request** function leverages the **openapi JSON** file provided
 
 If the **access_token** is not provided, or if it is set to a value of **null**, it will not be included in the actual request.  OAuth2 restricted endpoints should fail if authentication is required and not supplied.
 
-A request example using **EtsyClient.request()** for the **getShopPaymentAccountLedgerEntries** endpoint with **parameters** set for **min_created**, **max_created**, **limit**, and **offset**.  This example also includes an **access_token** value which is required for this private endpoint:
+A request example using **EtsyClient.request()** for the **getShopPaymentAccountLedgerEntries** endpoint with **parameters** set for **min_created**, **max_created**, **limit**, and **offset**, which includes the **access_token** value required for this private endpoint can be found below:
 
 `let result = await etsy.EtsyClient.request('getShopPaymentAccountLedgerEntries', { 
     min_created : 946684800,
