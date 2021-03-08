@@ -2,7 +2,7 @@ const CryptoJS = require('crypto-js')           // https://www.npmjs.com/package
 const { v4: uuidv4 } = require('uuid')          // https://www.npmjs.com/package/uuid
 const Str = require('@supercharge/strings')     // https://www.npmjs.com/package/@supercharge/strings
 const request = require('request')              // https://www.npmjs.com/package/request
-const openapi = require('./openapi')
+const { openapi } = require('./openapi')
 const { client_id, salt, scopes, redirect_uri } = require('./etsyAuth.config')
 
 class EtsyClient {
