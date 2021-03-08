@@ -80,7 +80,7 @@ Finally a request can be made to the v3 endpoints by using the EtsyClient.reques
 
 The **EtsyClient.request** function leverages the **openapi JSON** file provided by Etsy here: https://github.com/etsy/open-api/blob/64a5211aeb2210bfad4e3d057c64b856643f8696/openapi.json
 
-EtsyClient.request() accepts an **operationId** string matching one of Etsy openapi operationId values, followed by a **parameter** object in the following format:
+**EtsyClient.request()** accepts an **operationId** string matching one of Etsy openapi operationId values, followed by a **parameter** object in the following format:
 
 `EtsyClient.request('operationId', { parameterKey : parameterValue, parameterKey2 : parameterValue2, ...}, access_token, requestBody)`
 
