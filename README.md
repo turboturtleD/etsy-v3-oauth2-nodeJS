@@ -74,9 +74,19 @@ If the **access_token** is still valid, it will be returned immediately.  If the
 
 Finally a request can be made to the v3 endpoints by using the EtsyClient.request function.  Currently this function is only able to handle basic requests.
 
-# ***Etsy v3 endpoints are currently in a Closed Alpha group test phase, and they cannot be accessed without your client_id being explicitly whitelisted by Etsy.com.  I have not yet been able to successfully test these endpoints, and cannot at this time attest to the actual functionality or the validity of the following endpoint request functions***
+#Making Requests:
 
-Request example using **EtsyClient.request()**:
+***Etsy v3 endpoints are currently in a Closed Alpha group test phase, and they cannot be accessed without your client_id being explicitly whitelisted by Etsy.com.  I have not yet been able to successfully test these endpoints, and cannot at this time attest to the actual functionality or the validity of the following endpoint request functions***
+
+EtsyClient leverages the **openapi JSON** file provided by Etsy here: https://github.com/etsy/open-api/blob/64a5211aeb2210bfad4e3d057c64b856643f8696/openapi.json
+
+EtsyClient.request() accepts an **operationId** string matching one of Etsy openapi operationId values, followed by a **parameter** object in the following format:
+
+`EtsyClient.request('operationId', { parameterKey : parameterValue, parameterKey2 : parameterValue2, ...}, access_token, requestBody)`
+
+If the **access_token** is not provided, or if it is set to a value of **null**, it will not be included in the actual request.  OAuth2 restricted endpoints should fail if authentication is required and not supplied.
+
+A request example using **EtsyClient.request()** for the **getShopPaymentAccountLedgerEntries** endpoint with **parameters** set for **min_created**, **max_created**, **limit**, and **offset**.  This example also includes an **access_token** value which is required for this private endpoint:
 
 `let result = await etsy.EtsyClient.request('getShopPaymentAccountLedgerEntries', { 
     min_created : 946684800,
@@ -87,13 +97,7 @@ Request example using **EtsyClient.request()**:
     token.access_token,
     null)`
 
-EtsyClient leverages the <b>openapi JSON</b> file provided here: https://github.com/etsy/open-api/blob/64a5211aeb2210bfad4e3d057c64b856643f8696/openapi.json
 
-EtsyClient.request accepts an <b>operationId</b> string matching Etsy's openapi operationId values, followed by a parameter object in the format:
-
-`EtsyClient.request('operationId', { parameterKey : parameterValue, parameterKey2 : parameterValue2, ...}, access_token, requestBody)`
-
-If the <b>access_token</b> is not provided or set to a value of <b>null</b>, it will not be included in the request.  OAuth restricted endpoints should fail if authentication is required and not supplied.
 
 If the request is successful, the result can be parsed with the data provided by the endpoint:
 
