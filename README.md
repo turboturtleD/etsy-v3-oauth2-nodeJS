@@ -74,7 +74,7 @@ If the **access_token** is still valid, it will be returned immediately.  If the
 
 Finally a request can be made to the v3 endpoints by using the EtsyClient.request function.  Currently this function is only able to handle basic requests.
 
-#Making Requests:
+# Making Requests:
 
 ***Etsy v3 endpoints are currently in a Closed Alpha group test phase, and they cannot be accessed without your client_id being explicitly whitelisted by Etsy.com.  I have not yet been able to successfully test these endpoints, and cannot at this time attest to the actual functionality or the validity of the following endpoint request functions***
 
