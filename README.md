@@ -72,9 +72,9 @@ Before each endpoint request is made, the token is examined to be expired or val
 
 If the **access_token** is still valid, it will be returned immediately.  If the **access_token** has expired, but the **refresh_token** is still valid, the token will be renewed asychronously and returned by a **Promise** when complete.  If the **refresh_token** has expired, the function will return an **error:** 'refresh token expired, re-athentication required' with no further handling.
 
-Finally a request can be made to the v3 endpoints by using the EtsyClient.request function.  Currently this function is only able to handle basic requests.
-
 # Making Requests:
+
+Finally a request can be made to the v3 endpoints by using the **EtsyClient.request()** function.  Currently this function is only able to handle basic requests.
 
 ***Etsy v3 endpoints are currently in a Closed Alpha group test phase, and they cannot be accessed without your client_id being explicitly whitelisted by Etsy.com.  I have not yet been able to successfully test these endpoints, and cannot at this time attest to the actual functionality or the validity of the following endpoint request functions***
 
