@@ -44,10 +44,9 @@ If the **state** values match, we want to proceed to obtain the **access_token**
 
 First we form the **tokenRequest** object using the **initializeTenant.preimage** retrieved from session storage, and the authorization **code** provided from the server in the previous response.  
 
-`let initializeTenant = req.session.initializeTenant`<br>
 `const tokenRequest = {
     code : req.query.code,
-    code_verifier : initializeTenant.preimage,
+    code_verifier : req.session.initializeTenant.preimage,
 }`
 
 At this point the **initializeTenant** object is no longer needed and should be removed from storage as it will not be reused.
