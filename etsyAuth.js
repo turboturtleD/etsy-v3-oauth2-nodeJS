@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid')          // https://www.npmjs.com/package
 const Str = require('@supercharge/strings')     // https://www.npmjs.com/package/@supercharge/strings
 const request = require('request')              // https://www.npmjs.com/package/request
 const { openapi } = require('./openapi')            //
-const { client_id, salt, scopes, redirect_uri } = require('./etsyAuth.config.ttd')
+const { client_id, salt, scopes, redirect_uri } = require('./etsyAuth.config')
 
 class EtsyClient {
     constructor(){}
@@ -50,9 +50,9 @@ class EtsyClient {
                 else{
                     if(currentTime >= token.refresh_token_expires)throw new Error('refresh token expired, re-athentication required')
                     if(currentTime >= token.access_token_expires){              //token is expired, but refresh token has not
-                        let result = await etsy.EtsyClient.refreshToken(token)  //retrieve new access token using refresh token
+                        let result = await requestRefresh(token)  //retrieve new access token using refresh token
                         const refreshed_token = JSON.parse(result.body)         //parse server response
-                        const enhanced_token = etsy.EtsyClient.enhanceToken(refreshed_token)    //add additional helpful data to token for later use
+                        const enhanced_token = EtsyClient.enhanceToken(refreshed_token)    //add additional helpful data to token for later use
                         resolve(enhanced_token)                                 //return refreshed token
                     }
                     else {
@@ -103,38 +103,10 @@ class EtsyClient {
         })
     }
 
-    static refresh (token) {
-        return new Promise((resolve, reject) => {
-            let body = {
-                grant_type : 'refresh_token',
-                client_id : client_id,
-                redirect_uri : redirect_uri,
-                refresh_token : token.refresh_token,
-            }
-            request({
-                method : 'POST',
-                uri : 'https://api.etsy.com/v3/public/oauth/token',
-                headers : {
-                    'Content-Type' : 'application/x-www-form-urlencoded'
-                },
-                body : encodeBody(body),
-            }, (error, response, body) => {
-                if (error) reject(error)
-                if (error) console.log(error)
-                if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
-                    resolve({ response: response, body: body });
-                }
-                else {
-                    reject({ response: response, body: body });
-                }
-            })
-        })
-    }
-
     static request(endpoint,parameters,token,requestBody){
         return new Promise (async (resolve,reject) => {
             try{
-                let refreshed_token = await checkTokenForRefreshing(token)
+                let refreshed_token = await EtsyClient.refresh(token)
                 const access_token = refreshed_token.access_token
                 const resourceRequest = new OpenAPIRequest(endpoint,parameters)
                 let headers = {
@@ -211,6 +183,7 @@ class OpenAPI {
                 }
             }
         })
+        
         function buildEndpoint(path,method){
             const basepath = openapi.paths[path][method.toLowerCase()]
             const endpoint = {
@@ -262,32 +235,32 @@ class OpenAPIRequest {
     }
 }
 
-function checkTokenForRefreshing(token){
-    return new Promise(async (resolve,reject) => {
-        try{
-            const currentTime = new Date()*1
-            if(currentTime < token.access_token_expires){  //token does not need to be refreshed
-                resolve(token)
-            }
-            else{
-                if(currentTime >= token.refresh_token_expires)throw new Error('refresh token expired, re-athentication required')
-                if(currentTime >= token.access_token_expires){              //token is expired, but refresh token has not
-                    let result = await EtsyClient.refreshToken(token)  //retrieve new access token using refresh token
-                    const refreshed_token = JSON.parse(result.body)         //parse server response
-                    const enhanced_token = EtsyClient.enhanceToken(refreshed_token)    //add additional helpful data to token for later use
-                    resolve(enhanced_token)                                 //return refreshed token
-                }
-                else {
-                    throw new Error('unknown token evaluation error')
-                }
-            }
+function requestRefresh (token) {
+    return new Promise((resolve, reject) => {
+        let body = {
+            grant_type : 'refresh_token',
+            client_id : client_id,
+            redirect_uri : redirect_uri,
+            refresh_token : token.refresh_token,
         }
-        catch(e){
-            console.log(e)
-            reject(e)
-        }
+        request({
+            method : 'POST',
+            uri : 'https://api.etsy.com/v3/public/oauth/token',
+            headers : {
+                'Content-Type' : 'application/x-www-form-urlencoded'
+            },
+            body : encodeBody(body),
+        }, (error, response, body) => {
+            if (error) reject(error)
+            if (error) console.log(error)
+            if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
+                resolve({ response: response, body: body });
+            }
+            else {
+                reject({ response: response, body: body });
+            }
+        })
     })
-    
 }
 
 function encodeBody(params) {
