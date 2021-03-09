@@ -2,8 +2,8 @@ const CryptoJS = require('crypto-js')           // https://www.npmjs.com/package
 const { v4: uuidv4 } = require('uuid')          // https://www.npmjs.com/package/uuid
 const Str = require('@supercharge/strings')     // https://www.npmjs.com/package/@supercharge/strings
 const request = require('request')              // https://www.npmjs.com/package/request
-const { openapi } = require('./openapi')
-const { client_id, salt, scopes, redirect_uri } = require('./etsyAuth.config')
+const { openapi } = require('./openapi')            //
+const { client_id, salt, scopes, redirect_uri } = require('./etsyAuth.config.ttd')
 
 class EtsyClient {
     constructor(){}
@@ -38,6 +38,34 @@ class EtsyClient {
             redirect_uri : redirect_uri
         }
         return tenant
+    }
+
+    static refresh(token){
+        return new Promise(async (resolve,reject) => {
+            try{
+                const currentTime = new Date()*1
+                if(currentTime < token.access_token_expires){  //token does not need to be refreshed
+                    resolve(token)
+                }
+                else{
+                    if(currentTime >= token.refresh_token_expires)throw new Error('refresh token expired, re-athentication required')
+                    if(currentTime >= token.access_token_expires){              //token is expired, but refresh token has not
+                        let result = await etsy.EtsyClient.refreshToken(token)  //retrieve new access token using refresh token
+                        const refreshed_token = JSON.parse(result.body)         //parse server response
+                        const enhanced_token = etsy.EtsyClient.enhanceToken(refreshed_token)    //add additional helpful data to token for later use
+                        resolve(enhanced_token)                                 //return refreshed token
+                    }
+                    else {
+                        throw new Error('unknown token evaluation error')
+                    }
+                }
+            }
+            catch(e){
+                console.log(e)
+                reject(e)
+            }
+        })
+        
     }
 
     static enhanceToken(token){
@@ -75,7 +103,7 @@ class EtsyClient {
         })
     }
 
-    static refreshToken (token) {
+    static refresh (token) {
         return new Promise((resolve, reject) => {
             let body = {
                 grant_type : 'refresh_token',
@@ -103,31 +131,41 @@ class EtsyClient {
         })
     }
 
-    static request(endpoint,parameters,access_token,requestBody){
-        return new Promise ((resolve,reject) => {
-            const resourceRequest = new OpenAPIRequest(endpoint,parameters)
-            let headers = {
-                'Content-Type' : 'application/x-www-form-urlencoded',
-                'x-api-key' : client_id,
+    static request(endpoint,parameters,token,requestBody){
+        return new Promise (async (resolve,reject) => {
+            try{
+                let refreshed_token = await checkTokenForRefreshing(token)
+                const access_token = refreshed_token.access_token
+                const resourceRequest = new OpenAPIRequest(endpoint,parameters)
+                let headers = {
+                    'Content-Type' : 'application/x-www-form-urlencoded',
+                    'x-api-key' : client_id,
+                }
+                if (access_token != null && access_token != undefined) headers['authorization'] = 'Bearer ' + access_token
+                let body = null
+                if (requestBody != null && requestBody != undefined) body = encodeBody(requestBody)
+                request({
+                    method: resourceRequest.method,
+                    uri : openapi.servers[0].url + resourceRequest.path,
+                    headers : headers,
+                    body: body,
+                }, (error, response, body) => {
+                    if (error) reject(error)
+                    if (error) console.log(error)
+                    if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
+                        console.log(response,body)
+                        resolve({ response: response, body: body })
+                    }
+                    else {
+                        reject({ response: response, body: body })
+                        console.log(response,body)
+                    }
+                })
+                }
+            catch(e){
+                reject(e)
             }
-            if (access_token != null && access_token != undefined) headers['authorization'] = 'Bearer ' + access_token
-            let body = null
-            if (requestBody != null && requestBody != undefined) body = requestBody
-            request({
-                method: resourceRequest.method,
-                uri : openapi.servers[0].url + resourceRequest.path,
-                headers : headers,
-                body: body,
-            }, (error, response, body) => {
-                if (error) reject(error)
-                if (error) console.log(error)
-                if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
-                    resolve({ response: response, body: body })
-                }
-                else {
-                    reject({ response: response, body: body })
-                }
-            })
+            
         })
     }
 }
@@ -144,6 +182,7 @@ class OpenAPI {
     }
 
     endpointer () {
+        console.log(openapi)
         const allPaths = Object.keys(openapi.paths)
         let endpoint
         allPaths.forEach(path => {
@@ -221,6 +260,34 @@ class OpenAPIRequest {
         const finalPath = inPath + queryThread
         return finalPath
     }
+}
+
+function checkTokenForRefreshing(token){
+    return new Promise(async (resolve,reject) => {
+        try{
+            const currentTime = new Date()*1
+            if(currentTime < token.access_token_expires){  //token does not need to be refreshed
+                resolve(token)
+            }
+            else{
+                if(currentTime >= token.refresh_token_expires)throw new Error('refresh token expired, re-athentication required')
+                if(currentTime >= token.access_token_expires){              //token is expired, but refresh token has not
+                    let result = await EtsyClient.refreshToken(token)  //retrieve new access token using refresh token
+                    const refreshed_token = JSON.parse(result.body)         //parse server response
+                    const enhanced_token = EtsyClient.enhanceToken(refreshed_token)    //add additional helpful data to token for later use
+                    resolve(enhanced_token)                                 //return refreshed token
+                }
+                else {
+                    throw new Error('unknown token evaluation error')
+                }
+            }
+        }
+        catch(e){
+            console.log(e)
+            reject(e)
+        }
+    })
+    
 }
 
 function encodeBody(params) {
