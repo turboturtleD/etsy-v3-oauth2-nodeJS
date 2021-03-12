@@ -210,28 +210,33 @@ class OpenAPIRequest {
         this.params = params
     }
 
-    pathmaker (params) {
-        let inPath = this.apiobject.path
-        let queryThread = '?'
-        const requestObjectParamKeys = Object.keys(params)
-        requestObjectParamKeys.forEach(key => {
-            let param = this.apiobject.parameters.find(param => (param.name == key))
-            if (param.in == 'path'){
-                inPath = inPath.replace('{' + key + '}',params[key])
+        pathmaker (params) {
+        if(params != undefined && params != null && params != ''){
+            let inPath = this.apiobject.path
+            let queryThread = '?'
+            const requestObjectParamKeys = Object.keys(params)
+            requestObjectParamKeys.forEach(key => {
+                let param = this.apiobject.parameters.find(param => (param.name == key))
+                if (param.in == 'path'){
+                    inPath = inPath.replace('{' + key + '}',params[key])
+                }
+                if (param.in == 'query'){
+                    queryThread += key + '=' + encodeURIComponent(params[key]) + '&'
+                }
+            })
+            if (queryThread.indexOf('&') > -1) {
+                console.log('queryThread',queryThread)
+                queryThread = queryThread.slice(0,queryThread.length-1)
             }
-            if (param.in == 'query'){
-                queryThread += key + '=' + encodeURIComponent(params[key]) + '&'
+            else {
+                queryThread = ''
             }
-        })
-        if (queryThread.indexOf('&') > -1) {
-            console.log('queryThread',queryThread)
-            queryThread = queryThread.slice(0,queryThread.length-1)
+            const finalPath = inPath + queryThread
+            return finalPath
         }
-        else {
-            queryThread = ''
+        else{
+            return this.apiobject.path
         }
-        const finalPath = inPath + queryThread
-        return finalPath
     }
 }
 
