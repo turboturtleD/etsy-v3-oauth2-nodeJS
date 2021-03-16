@@ -188,7 +188,7 @@ class OpenAPI {
             const basepath = openapi.paths[path][method.toLowerCase()]
             const endpoint = {
                 path : path,
-                method : 'GET',
+                method : method,
                 description : basepath.description,
                 parameters : basepath.parameters,
                 requestBody : basepath.requestBody,
