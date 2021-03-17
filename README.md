@@ -68,13 +68,13 @@ Now we can store the token in session storage.
 
 # Making Requests:
 
+***Etsy v3 endpoints are currently in a Closed Alpha group test phase, and they cannot be accessed without your client_id being explicitly whitelisted by Etsy.com.***
+
 Finally a request can be made to the v3 endpoints by using the **EtsyClient.request()** function.  Currently this function is only able to handle basic requests.
 
 Before each endpoint request is made, the token is examined to be expired or valid for use.  This will be done automatically within the **EtsyClient.request()** function, however if the **refresh_token** is expired, this function will return an error with no further handling.
 
 If you would like to manually refresh the token, you can use the static function **EtsyClient.refresh(token)** which will return the token immediately if still valid, or asynchonously if refreshing is required and the refreshed token returned. As with the request function, if the **refresh_token** is expired, an **error** will be thrown with no additional handling.
-
-***Etsy v3 endpoints are currently in a Closed Alpha group test phase, and they cannot be accessed without your client_id being explicitly whitelisted by Etsy.com.***
 
 The **EtsyClient.request** function leverages the **openapi JSON** file provided by Etsy here: https://github.com/etsy/open-api/blob/64a5211aeb2210bfad4e3d057c64b856643f8696/openapi.json
 
