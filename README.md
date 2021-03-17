@@ -31,7 +31,7 @@ Store <b>initializeTenant</b> object in a secure server location for later authe
 
 `req.session.initializeTenant = initializeTenant`
 
-Next, redirect the client to consent URL.</b>
+Next, redirect the client to the consent URL.</b>
 
 `res.redirect(302, initializeTenant.consentUrl)`
 
