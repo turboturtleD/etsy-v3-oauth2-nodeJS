@@ -6,12 +6,10 @@ var privateKey = fs.readFileSync(__dirname + '/server.key').toString()
 var certificate = fs.readFileSync(__dirname + '/server.crt').toString()
 var credentials = {key: privateKey, cert: certificate}
 var server = https.createServer(credentials, app)
-const bodyParser = require('body-parser')
 const etsy = require('./etsyAuth')
 const session = require('express-session')
-const server_port = 8000
+const server_port = 8004
 
-app.set('trust proxy', 1)
 app.use(session({
     secret: 'etsy_v3_client_secret',
     resave: false,
@@ -61,7 +59,7 @@ app.get('/etsy-oauth-redirect', async (req, res) => {
         else {
             req.session.tenants.push(enhanced_token)                    //no duplicates found, add tenant to session.tenants
         }
-        res.sendFile(__dirname + '/../index.htm')
+        res.status(200).send(JSON.stringify(enhanced_token))//sendFile(__dirname + '/../index.htm')
     }
     catch (e) {
         console.log(e)
@@ -76,23 +74,26 @@ app.get('/tenants', async function(req,res){
         if(tenants != undefined){
             let activeTenantIndex = 0
             const tenantShops = []
-            if(tenants.length > activeTenantIndex){
-                let shop = await findTenantShop()
-                tenantShops.push(shop)
+            async function getShops(){
+                if(tenants.length > activeTenantIndex){
+                    let shop = await findTenantShop()
+                    tenantShops.push(shop)
+                    getShops()
+                }
+                else{
+                    res.status(200).send(JSON.stringify(tenantShops))
+                }
             }
-            else{
-                res.status(200).send(tenantShops)
-            }
-
+            getShops()
             function findTenantShop(){
                 return new Promise(async (resolve,reject) => {
                     try{
                         const activeTenant = tenants[activeTenantIndex++]
+                        console.log(activeTenant)
                         let result = await etsy.EtsyClient.request('getShopByOwnerUserId', { 
                             user_id : activeTenant.user_id,
                         },
-                        activeTenant.access_token, null )
-                        console.log(result)
+                        activeTenant, null )
                         const shop = JSON.parse(result.body)
                         resolve(shop)
                     }
