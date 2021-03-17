@@ -103,6 +103,8 @@ class EtsyClient {
         })
     }
 
+
+
     static request(endpoint,parameters,token,requestBody){
         return new Promise (async (resolve,reject) => {
             try{
@@ -125,7 +127,6 @@ class EtsyClient {
                     if (error) reject(error)
                     if (error) console.log(error)
                     if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
-                        console.log(response,body)
                         resolve({ response: response, body: body })
                     }
                     else {
@@ -154,7 +155,6 @@ class OpenAPI {
     }
 
     endpointer () {
-        console.log(openapi)
         const allPaths = Object.keys(openapi.paths)
         let endpoint
         allPaths.forEach(path => {
@@ -183,7 +183,6 @@ class OpenAPI {
                 }
             }
         })
-        
         function buildEndpoint(path,method){
             const basepath = openapi.paths[path][method.toLowerCase()]
             const endpoint = {
@@ -210,7 +209,7 @@ class OpenAPIRequest {
         this.params = params
     }
 
-        pathmaker (params) {
+    pathmaker (params) {
         if(params != undefined && params != null && params != ''){
             let inPath = this.apiobject.path
             let queryThread = '?'
@@ -225,7 +224,6 @@ class OpenAPIRequest {
                 }
             })
             if (queryThread.indexOf('&') > -1) {
-                console.log('queryThread',queryThread)
                 queryThread = queryThread.slice(0,queryThread.length-1)
             }
             else {
