@@ -80,7 +80,7 @@ The **EtsyClient.request** function leverages the **openapi JSON** file provided
 
 **EtsyClient.request()** accepts an **operationId** string matching one of Etsy openapi operationId values, followed by a **parameter** object in the following format:
 
-`EtsyClient.request('operationId', { parameterKey : parameterValue, parameterKey2 : parameterValue2, ...}, access_token, requestBody)`
+`EtsyClient.request('operationId', { parameterKey : parameterValue, parameterKey2 : parameterValue2, ...}, enhanced_token, requestBody)`
 
 If the **access_token** is not provided, or if it is set to a value of **null**, it will not be included in the actual request.  OAuth2 restricted endpoints should fail if authentication is required and not supplied.
 
@@ -92,7 +92,7 @@ A request example using **EtsyClient.request()** for the **getShopPaymentAccount
     limit : 100,
     offset : 100,
     },
-    token.access_token,
+    enhanced_token,
     null)`
 
 
