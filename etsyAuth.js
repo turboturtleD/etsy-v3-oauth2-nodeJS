@@ -108,8 +108,10 @@ class EtsyClient {
     static request(endpoint,parameters,token,requestBody){
         return new Promise (async (resolve,reject) => {
             try{
-                let refreshed_token = await EtsyClient.refresh(token)
-                const access_token = refreshed_token.access_token
+                if(token != null && token != undefined && token != '') {
+                    let refreshed_token = await EtsyClient.refresh(token)
+                    const access_token = refreshed_token.access_token
+                }
                 const resourceRequest = new OpenAPIRequest(endpoint,parameters)
                 let headers = {
                     'Content-Type' : 'application/x-www-form-urlencoded',
