@@ -6,7 +6,7 @@ var privateKey = fs.readFileSync(__dirname + '/server.key').toString()
 var certificate = fs.readFileSync(__dirname + '/server.crt').toString()
 var credentials = {key: privateKey, cert: certificate}
 var server = https.createServer(credentials, app)
-const etsy = require('./etsyAuth')
+const etsy = require('./lib/etsyAuth')
 const session = require('express-session')
 const server_port = 8004
 
